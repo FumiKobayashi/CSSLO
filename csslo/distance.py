@@ -1,8 +1,8 @@
 import concurrent.futures
 import itertools as iter
 
-from common import *
-from NHow import *
+from .common import *
+from .NHow import *
 
 
 def minWeightZ2(A, tB=1, pList=None):
