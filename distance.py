@@ -82,6 +82,54 @@ def distGenetic(L, S=None, tB=1, pList=None, settgs=None):
     return best, L
 
 
+def distGeneticEvalInterface(L, S=None, tB=1, pList=None, settgs=None):
+    k, n = L.shape
+    nB = n // tB
+    if pList is None:
+        pList = pListDefault(tB)
+    L = np.hstack([L, ZMatI(k)])
+    if S is None:
+        S = ZMatZeros((0, n + k))
+    else:
+        S = np.hstack([S, ZMatZeros((len(S), k))])
+    defs = {
+        "lambmu": 3,
+        "mu": nB,
+        "pMut": 2 / nB,
+        "sMut": 1 / (nB * nB),
+        "genCount": 1 + int(np.log(nB)),
+        "tabuLength": nB,
+        "fast": True,
+    }
+
+    ## used defaults for any settings not in settgs
+    if settgs is not None:
+        settgs = defs | settgs
+    else:
+        settgs = defs
+    settgs["genCount"] = 1 + int(np.log(nB)) if settgs["fast"] else 1 + int(nB**0.5)
+
+    population = [
+        np.random.permutation(nB) for i in range(settgs["lambmu"] * settgs["mu"])
+    ]
+    # probList, LOList, population = distGeneticEval(
+    #     L, S, tB, pList, population, parallell=settgs["fast"]
+    # )
+
+    LS = np.vstack([L, S])
+    nA = len(L)
+    probList = []
+    LOList = []
+    popList = []
+    for ix in population:
+        L1, probs1 = permEval(LS, L, pList, nA, tB, ix)
+        LOList.append(L1)
+        probList.append(probs1)
+        popList.append(ix)
+
+    return probList, LOList, population
+
+
 def indepL(L, pList, nA, tB):
     w = np.sum(L[:, :-nA], axis=-1)
     L = L[w > 0, :]
