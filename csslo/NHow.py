@@ -4,7 +4,7 @@ import tracemalloc
 import numba as nb
 import numpy as np
 
-from common import *
+from .common import *
 
 # from distance import *
 
