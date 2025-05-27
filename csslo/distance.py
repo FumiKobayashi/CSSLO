@@ -109,6 +109,7 @@ def distGeneticEvalInterface(L, S=None, tB=1, pList=None, settgs=None):
         settgs = defs
     settgs["genCount"] = 1 + int(np.log(nB)) if settgs["fast"] else 1 + int(nB**0.5)
 
+    best = None
     population = [
         np.random.permutation(nB) for i in range(settgs["lambmu"] * settgs["mu"])
     ]
@@ -127,7 +128,13 @@ def distGeneticEvalInterface(L, S=None, tB=1, pList=None, settgs=None):
         probList.append(probs1)
         popList.append(ix)
 
-    return probList, LOList, population
+    j = np.argmax(probList)
+    if best is None or probList[j] > best:
+        best = probList[j]
+        L = LOList[j]
+    L = L[:, :-k]
+    distance = np.sum(L)
+    return distance, best
 
 
 def indepL(L, pList, nA, tB):
