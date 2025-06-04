@@ -1,6 +1,7 @@
 # CSSLO
 
 A library for finding logical operators of quantum CSS error correction codes.
+This repo is forked from `m-webster/CSSLO` and modified it to install functions as a library.
 
 ## Installation
 
