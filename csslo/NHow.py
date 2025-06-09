@@ -159,7 +159,7 @@ def HowZN(A, N, tB, nB, nC, r0):
     if np.sum(A) == 0:
         return A, pivots
     m, n = A.shape
-    B = [a for a in A]
+    B = A.copy()
     N = nb.int16(N)
     r = r0
 
@@ -199,7 +199,8 @@ def HowZN(A, N, tB, nB, nC, r0):
                 ## If x == 0, b is a unit and we move to the next value of l
                 x = Ann_jit(b, N)
                 if x > 0:
-                    B.append(np.mod(B[r] * x, N))
+                    new_row = np.mod(B[r] * x, N)
+                    B = np.vstack([B, new_row.reshape(1, -1)])
                     m += 1
                 r += 1
     temp = np.empty((m, n), dtype=nb.int16)
