@@ -200,7 +200,11 @@ def HowZN(A, N, tB, nB, nC, r0):
                 x = Ann_jit(b, N)
                 if x > 0:
                     new_row = np.mod(B[r] * x, N)
-                    B = np.vstack([B, new_row.reshape(1, -1)])
+                    # Create new array with additional row
+                    temp_B = np.zeros((m + 1, n), dtype=nb.int16)
+                    temp_B[:m] = B[:m]
+                    temp_B[m] = new_row
+                    B = temp_B
                     m += 1
                 r += 1
     temp = np.empty((m, n), dtype=nb.int16)
